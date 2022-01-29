@@ -55,6 +55,15 @@ function makeStable(frame) {
 
     let wrap = $('<div>').attr({ id: frame.ID });
     wrap.addClass('table__wrapper');
+    let CFA = $('<div>').text(`CFA:${frame.CFA}`);
+    let PC = $('<div>').text(`PC:${frame.PC}`);
+    let SP = $('<div>').text(`SP:${frame.SP}`);
+    let FP = $('<div>').text(`FP:${frame.FP}`);
+    wrap.append(CFA);
+    wrap.append(PC);
+    wrap.append(SP);
+    wrap.append(FP);
+    
     if (markFrameTab != frame.ID)
         wrap.hide();
     $('div.thread__table-area').append(wrap.append(stable));

@@ -25,28 +25,34 @@
                 <textarea name="codeEditor link" id='codeEditor' wrap="off">
 
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
-void foo(void){
-    char a[3]={0,0,0};
-    char *p;
-    long int r;
+                         
+int check_passwd(char *passwd){
+    char buf[16];
+    int auth_flag = 0;
                           
-    p = a;
-    r = 0x00007fffffffdf68 - (long int)p;
-    p = p + r;
-    *p = *p + 8;
-    printf("aaa\n");
-    fflush(stdout);
-    return;
+    strcpy(buf, passwd);
+    if(strcmp(buf, "iloveyou")==0)
+    auth_flag = 1;
+                         
+    return auth_flag;
 }
-int main(int argc, char ** argv) {
-    char x;
-    x=0;
-    foo();
-    x=100;
-    printf ("x=%d\n", x);
+                         
+int main(int argc, char *argv[]){
+    char pass[25];
+    scanf("%s",pass);
+    printf("[-]How to use: %s <password>\n", pass);
+                          
+                         
+    if(check_passwd(pass))
+    printf("[+]Access Sucsess\n");
+    else printf("[-]Access Denied\n");
+                         
     return 0;
 }
+                                                
+                                        
                         
                 </textarea>
 
