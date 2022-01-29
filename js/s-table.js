@@ -59,10 +59,12 @@ function makeStable(frame) {
     let PC = $('<div>').text(`PC:${frame.PC}`);
     let SP = $('<div>').text(`SP:${frame.SP}`);
     let FP = $('<div>').text(`FP:${frame.FP}`);
+    let return_ad = $('<div>').text(`return_address:${frame.return_ad}`);
     wrap.append(CFA);
     wrap.append(PC);
     wrap.append(SP);
     wrap.append(FP);
+    wrap.append(return_ad);
     
     if (markFrameTab != frame.ID)
         wrap.hide();
