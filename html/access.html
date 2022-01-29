@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/index.css">
+    <link type="text/css" rel="stylesheet" href="css/v-table.css">
+</head>
+
+<body>
+    <header>
+        <div class="title">Debug system</div>
+        <!-- <button class="button__file">File Send</button> -->
+    </header>
+
+    <div class="contents-wrapper">
+
+        <!-- 画面左 -->
+        <div class="left-section">
+            <div id="codearea" class="sec-source">
+                <div class="line__number link"></div>
+                <div class="code__mark link"></div>
+                <textarea name="codeEditor link" id='codeEditor' wrap="off">
+
+int threebai(int number){
+    number = number+number;
+    number = number+number;
+    return number;
+}
+                    
+int twoBai(int number){
+    number = threebai(number);
+    return number*2;
+}
+                    
+int main(){
+    int a = 30;
+    int b = 40;
+    b = twoBai(b);
+    return 0;
+}
+                </textarea>
+
+            </div>
+        </div>
+
+        <!-- 画面右 -->
+        <div class="right-section">
+            <!-- 画面右上 入出力 -->
+            <div class="sec-io">
+                <!-- launchボタン・nextボタン・inputフォーム -->
+                <div class="input-wrapper">
+                    <div class="button__wrapper">
+                        <div>
+                            <button id="launch" class="button__launch" style="font-size: 14pt;">
+                                <i class="fas fa-rocket"></i>launch
+                            </button>
+                        </div>
+                        <div>
+                            <button id="continue" class="button__continue" style="font-size: 14pt;">
+                                <i class="fas fa-redo-alt"></i>&nbsp;Continue&nbsp;
+                            </button>    
+                        </div>
+                        <div>
+                            <button id="skip" class="button__skip" style="font-size: 14pt;">
+                                <i class="fas fa-arrow-right"></i>skip
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input__area">
+                        <input type="text" id="input" class="input__text" placeholder="input value" />
+                        <button id="input" class="button__input" style="font-size: 14pt;">
+                            <i class="fas fa-pen"></i>Input
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 出力テキストエリア -->
+                <div class="output__area">
+                    <div class="output__title">Output Value</div>
+                    <textarea class="output__text"></textarea>
+                </div>
+            </div>
+
+            <!-- 画面右下 スレッドテーブル -->
+            <div class=" sec-thread">
+                <ul class="thread__tab-button-ul" style="font-size: 30px;"></ul>
+                <ul class="frame__tab-button-ul" style="font-size: 30px;"></ul>
+                <div class="thread__table-area"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script type="text/javascript" src='js/index.js'></script>
+<script type="text/javascript" src="js/s-table.js"></script>
+
+</html>

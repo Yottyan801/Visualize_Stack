@@ -1,0 +1,12 @@
+.stable,.str,.std{
+    border-collapse: collapse;
+    border:1px solid #333;
+    font-size: 18px;
+}
+.std.addr{
+    width: 40%;
+    text-align: right;
+}
+.std.mnemo,.std.ope{
+    width: 30%;
+}
