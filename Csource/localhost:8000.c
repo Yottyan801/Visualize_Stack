@@ -1,19 +1,26 @@
 
-int threebai(int number){
-    number = number+number;
-    number = number+number;
-    return number;
+#include<stdio.h>
+#include<string.h>
+void foo(void){
+    char a[3]={0,0,0};
+    char *p;
+    long int r;
+                          
+    p = a;
+    r = 0x00007fffffffdf68 - (long int)p;
+    p = p + r;
+    *p = *p + 8;
+    printf("aaa\n");
+    fflush(stdout);
+    return;
 }
-                    
-int twoBai(int number){
-    number = threebai(number);
-    return number*2;
-}
-                    
-int main(){
-    int a = 30;
-    int b = 40;
-    b = twoBai(b);
+int main(int argc, char ** argv) {
+    char x;
+    x=0;
+    foo();
+    x=100;
+    printf ("x=%d\n", x);
     return 0;
 }
+                        
                 
