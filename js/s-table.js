@@ -10,6 +10,7 @@ function Initialize() {
             $(elem).css({ 'color': '#2f7dfa'});
     });
     $('ul.thread__tab-button-ul').empty();
+    $('ul.frame__tab-button-ul').empty();
     $('div.thread__table-area').empty();
 }
 
