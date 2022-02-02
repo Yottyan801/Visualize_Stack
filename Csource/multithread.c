@@ -1,46 +1,38 @@
 #include <stdio.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include <pthread.h>
-int global;
-char string[20];
-void *counter(void *arg)
+                        
+void f1(void);
+void f2(void);
+int counter = 0;           
+int main(void)
+{
+    pthread_t thread1, thread2;
+                        
+    pthread_create(&thread1, NULL, (void *)f1, NULL);
+    pthread_create(&thread2, NULL, (void *)f2, NULL);
+                        
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+    
+                        
+    return 0;
+}
+                        
+void f1(void)
 {
     int i;
-    pid_t pid;
-    pthread_t thread_id;
-
-    pid = getpid();
-    thread_id = pthread_self();
-
     for (i = 0; i < 10; i++)
     {
-        global++;
-        printf("[%d][%d]%d\n", pid, thread_id, i);
+        counter++;
+        printf("counter = %d\n", counter);
     }
-    return (arg);
 }
-
-void main()
+                        
+void f2(void)
 {
-    pid_t p_pid;
-    int number, status;
-    pthread_t thread_id1, thread_id2;
-    void *result;
-
-    p_pid = getpid();
-    printf("[%d]start\n", p_pid);
-    status = pthread_create(&thread_id1, NULL, counter, &number);
-    printf("[%d]thread_id1=%d\n", p_pid, thread_id1);
-
-    status = pthread_create(&thread_id2, NULL, counter, (void *)NULL);
-    printf("[%d]thread_id2=%d\n", p_pid, thread_id2);
-
-    pthread_join(thread_id1, &result);
-    printf("[%d]thread_id1 = %d end\n", p_pid, thread_id1);
-
-    pthread_join(thread_id2, &result);
-    printf("[%d]thread_id2 = %d end\n", p_pid, thread_id2);
-
-    printf("[%d]end\n", p_pid);
+    int i;
+    for (i = 0; i < 10; i++)
+    {
+        counter++;
+    }
 }
