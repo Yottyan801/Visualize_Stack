@@ -1,32 +1,46 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <pthread.h>
+int global;
+char string[20];
+void *counter(void *arg)
+{
+    int i;
+    pid_t pid;
+    pthread_t thread_id;
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-                         
-int check_passwd(char *passwd){
-    char buf[16];
-    int auth_flag = 0;
-                          
-    strcpy(buf, passwd);
-    if(strcmp(buf, "iloveyou")==0)
-    auth_flag = 1;
-                         
-    return auth_flag;
+    pid = getpid();
+    thread_id = pthread_self();
+
+    for (i = 0; i < 10; i++)
+    {
+        global++;
+        printf("[%d][%d]%d\n", pid, thread_id, i);
+    }
+    return (arg);
 }
-                         
-int main(int argc, char *argv[]){
-    char pass[25];
-    scanf("%s",pass);
-    printf("[-]How to use: %s <password>\n", pass);
-                          
-                         
-    if(check_passwd(pass))
-    printf("[+]Access Sucsess\n");
-    else printf("[-]Access Denied\n");
-                         
-    return 0;
+
+void main()
+{
+    pid_t p_pid;
+    int number, status;
+    pthread_t thread_id1, thread_id2;
+    void *result;
+
+    p_pid = getpid();
+    printf("[%d]start\n", p_pid);
+    status = pthread_create(&thread_id1, NULL, counter, &number);
+    printf("[%d]thread_id1=%d\n", p_pid, thread_id1);
+
+    status = pthread_create(&thread_id2, NULL, counter, (void *)NULL);
+    printf("[%d]thread_id2=%d\n", p_pid, thread_id2);
+
+    pthread_join(thread_id1, &result);
+    printf("[%d]thread_id1 = %d end\n", p_pid, thread_id1);
+
+    pthread_join(thread_id2, &result);
+    printf("[%d]thread_id2 = %d end\n", p_pid, thread_id2);
+
+    printf("[%d]end\n", p_pid);
 }
-                                                
-                                        
-                        
-                
