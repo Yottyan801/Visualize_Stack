@@ -10,6 +10,7 @@ function Initialize() {
             $(elem).css({ 'color': '#2f7dfa'});
     });
     $('ul.thread__tab-button-ul').empty();
+    $('ul.frame__tab-button-ul').empty();
     $('div.thread__table-area').empty();
 }
 
@@ -132,8 +133,15 @@ function tabFrameFunc(event) {
     $(`div#${tab.attr('id')}.table__wrapper`).show();
     markFrameTab = tab.attr('id');
 }
-function tabThreadFunc(event){
 
+function tabThreadFunc(event){
+    let tab = $(event.target);
+    let other = $('ul.thread__tab-button-ul').children().not(tab);
+    tab.addClass('is-active');
+    other.removeClass('is-active');
+    $('div.table__wrapper').hide();
+    $(`div#${tab.attr('id')}.table__wrapper`).show();
+    markThreadTab = tab.attr('id');
 }
 
 function set_wp(wplist, t_idx) {
