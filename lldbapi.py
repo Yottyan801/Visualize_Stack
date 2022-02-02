@@ -22,9 +22,9 @@ class lldbapi:
     def compile(self, fpath="sample/sample.c", lib="", bin_path="bin/target"):
 
         com = (
-            "gcc %s -l%s -g -o %s" % (fpath, lib, bin_path)
+            "gcc %s -fno-stack-protector -l%s -g -o %s" % (fpath, lib, bin_path)
             if lib
-            else "gcc %s -g -o %s" % (fpath, bin_path)
+            else "gcc %s -fno-stack-protector -g -o %s" % (fpath, bin_path)
         )
         print("COM:" + com)
 
@@ -154,7 +154,7 @@ class lldbapi:
         if contents is None:
             f_dict['retrun_ad'] = 'None'
         else :
-            f_dict['retrun_ad'] = hex(int.from_bytes(contents,'little'))
+            f_dict['return_ad'] = hex(int.from_bytes(contents,'little'))
         f_dict['SP'] = hex(frame.GetSP())
         f_dict['PC'] = hex(frame.GetPC())
         f_dict['FP'] = hex(frame.GetFP())

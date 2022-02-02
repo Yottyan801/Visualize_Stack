@@ -24,23 +24,36 @@
                 <div class="code__mark link"></div>
                 <textarea name="codeEditor link" id='codeEditor' wrap="off">
 
-int threebai(int number){
-    number = number+number;
-    number = number+number;
-    return number;
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+                         
+int check_passwd(char *passwd){
+    char buf[16];
+    int auth_flag = 0;
+                          
+    strcpy(buf, passwd);
+    if(strcmp(buf, "iloveyou")==0)
+    auth_flag = 1;
+                         
+    return auth_flag;
 }
-                    
-int twoBai(int number){
-    number = threebai(number);
-    return number*2;
-}
-                    
-int main(){
-    int a = 30;
-    int b = 40;
-    b = twoBai(b);
+                         
+int main(int argc, char *argv[]){
+    char pass[25];
+    scanf("%s",pass);
+    printf("[-]How to use: %s <password>\n", pass);
+                          
+                         
+    if(check_passwd(pass))
+    printf("[+]Access Sucsess\n");
+    else printf("[-]Access Denied\n");
+                         
     return 0;
 }
+                                                
+                                        
+                        
                 </textarea>
 
             </div>
