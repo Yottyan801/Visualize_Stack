@@ -24,37 +24,47 @@
                 <div class="code__mark link"></div>
                 <textarea name="codeEditor link" id='codeEditor' wrap="off">
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-                         
-int check_passwd(char *passwd){
-    char buf[16];
-    int auth_flag = 0;
-                          
-    strcpy(buf, passwd);
-    if(strcmp(buf, "iloveyou")==0)
-    auth_flag = 1;
-                         
-    return auth_flag;
-}
-                         
-int main(int argc, char *argv[]){
-    char pass[25];
-    scanf("%s",pass);
-    printf("[-]How to use: %s <password>\n", pass);
-                          
-                         
-    if(check_passwd(pass))
-    printf("[+]Access Sucsess\n");
-    else printf("[-]Access Denied\n");
-                         
+#include <stdio.h>
+#include <pthread.h>
+                                                
+void f1(void);
+void f2(void);
+int counter = 0;           
+int main(void)
+{
+    pthread_t thread1, thread2;
+                                                
+    pthread_create(&thread1, NULL, (void *)f1, NULL);
+    pthread_create(&thread2, NULL, (void *)f2, NULL);
+                                                
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+                            
+                                                
     return 0;
 }
                                                 
+void f1(void)
+{
+    int i;
+    for (i = 0; i < 10; i++)
+    {
+        counter++;
+        printf("counter = %d\n", counter);
+    }
+}
+                                                
+void f2(void)
+{
+    int i;
+    for (i = 0; i < 10; i++)
+    {
+        counter++;
+    }
+}                                            
                                         
                         
-                </textarea>
+</textarea>
 
             </div>
         </div>
