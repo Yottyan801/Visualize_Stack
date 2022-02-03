@@ -111,6 +111,8 @@ function InsertFrameTab(frame, threadID) {
     if (markFrameTab == frame.ID)
         tab_li.addClass("is-active");
     $(".frame__tab-button-ul").append(tab_li)
+    $('li.frame__tab-button-li').hide();
+    $(`li.threadID${threadID}`).show();
 
 }
 function toHex(v) {
