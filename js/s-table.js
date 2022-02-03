@@ -151,9 +151,9 @@ function tabThreadFunc(event){
     let other = $('ul.thread__tab-button-ul').children().not(tab);
     tab.addClass('is-active');
     other.removeClass('is-active');
-    $('ul.frame__tab-button-li').hide();
+    $('ul.frame__tab-button-ul').hide();
+    $(`ul.frame__tab-button-ul`).children(`threadID${tab.attr('IndexID')}`).show();
     $('div.table__wrapper').hide();
-    $(`threadID${tab.attr('threadID')}`).show();
     $(`div#0.table__wrapper`).show();
     markThreadTab = tab.attr('id');
 }
