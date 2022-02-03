@@ -22,7 +22,7 @@ function AnalyzeThreadInfo(thread, pthread) {
     if (!frame)
         return;
     for(let frame of thread.flist){
-        InsertFrameTab(frame);
+        InsertFrameTab(frame,threadID);
         makeStable(frame);
     }
 
@@ -100,12 +100,13 @@ function InsertThreadTab(funcName, tid) {
     $(".thread__tab-button-ul").append(tab_li)
 
 }
-function InsertFrameTab(frame) {
+function InsertFrameTab(frame, threadID) {
     let tab_li = $('<li>').attr({
         class: 'frame__tab-button-li',
         id: frame.ID
     });
     tab_li.text(frame.name);
+    tab_li.addClass(`threadID${threadID}`);
     //tab_li.css({ 'background-color': color_set[tid] })
     tab_li.on('click', tabFrameFunc);
     if (markFrameTab == frame.ID)
@@ -150,8 +151,10 @@ function tabThreadFunc(event){
     let other = $('ul.thread__tab-button-ul').children().not(tab);
     tab.addClass('is-active');
     other.removeClass('is-active');
+    $('ul.frame__tab-button-li').hide();
     $('div.table__wrapper').hide();
-    $(`div#${tab.attr('id')}.table__wrapper`).show();
+    $(`threadID${tab.attr('threadID')}`).show();
+    $(`div#0.table__wrapper`).show();
     markThreadTab = tab.attr('id');
 }
 
