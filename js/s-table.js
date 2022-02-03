@@ -25,7 +25,6 @@ function AnalyzeThreadInfo(thread, pthread) {
         InsertFrameTab(frame,threadID);
         makeStable(frame);
     }
-
 }
 
 function markAtCode(thread, t_idx) {
