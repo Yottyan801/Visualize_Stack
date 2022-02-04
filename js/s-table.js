@@ -1,6 +1,7 @@
 const thead_key = ['address', 'mnemonic', 'operands'];
 let markThreadTab = 1
 let markFrameTab = 0
+let markExtraTab = 0
 
 function Initialize() {
     $(".mark").each(function(i, elem) {
@@ -11,6 +12,7 @@ function Initialize() {
     });
     $('ul.thread__tab-button-ul').empty();
     $('ul.frame__tab-button-ul').empty();
+    $('ul.extra__tab-button-ul').empty();
     $('div.thread__table-area').empty();
 }
 
@@ -117,7 +119,18 @@ function InsertFrameTab(frame, threadID) {
     $(`li.threadID${markThreadTab}`).show();
 
 }
-function InsertExtraTab(){
+function InsertExtraTab(frame,threadID){
+
+    let tab_Assembly = '<li>Assembly__tab-button-li'
+    let tab_Stack    = '<li>Stack__tab-button-li'
+    tab_Assembly.on('click', tabExtraFunc);
+    tab_Stack.on('click', tabExtraFunc);
+
+    if (markExtraTab == 0)
+        tab_Assembly.addClass("is-active");
+    $(".extra__tab-button-ul").append(tab_Assembly);
+    $('li.frame__tab-button-li').hide();
+    $(`li.threadID${markThreadTab}`).show();
 
 }
 function toHex(v) {
@@ -160,6 +173,16 @@ function tabThreadFunc(event){
     $('li.frame__tab-button-li').hide();
     $(`li.threadID${tab.attr('id')}`).show();
     markThreadTab = tab.attr('id');
+}
+
+function tabExtraFunc(event){
+    let tab = $(event.target);
+    let other = $('ul.extra__tab-button-ul').children().not(tab);
+    tab.addClass('is-active');
+    other.removeClass('is-active');
+    
+    $(`div#${tab.attr('id')}.table__wrapper.threadID${markThreadTab}`).show();
+    markFrameTab = tab.attr('id');
 }
 
 function set_wp(wplist, t_idx) {
