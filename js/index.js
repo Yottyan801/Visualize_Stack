@@ -62,6 +62,7 @@ $('#launch').click(function () {
             Initialize();
             for (let tidx in data.thread)
                 AnalyzeThreadInfo(data.thread[tidx], data.pthread);
+            InsertExtraTab();
             })
         }).fail(function(){
             alert("ブレイクポイントが設定できませんでした。");
@@ -87,6 +88,7 @@ $('#continue,#skip').click(function () {
         }
         for (let tidx in data.thread)
             AnalyzeThreadInfo(data.thread[tidx]);
+        InsertExtraTab();
         //initFunc();
     })
 })

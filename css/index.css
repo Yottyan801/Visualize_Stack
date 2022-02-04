@@ -258,14 +258,16 @@ header {
 }
 
 .thread__tab-button-ul,
-.frame__tab-button-ul {
+.frame__tab-button-ul,
+.extra__tab-button-ul {
     display: flex;
     justify-content: flex-start;
     border-bottom: 2px solid #DDD;
 }
 
 .thread__tab-button-li,
-.frame__tab-button-li {
+.frame__tab-button-li,
+.extra__tab-button-li {
     transition: 0.2s;
     padding: 10px;
     font-weight: bold;
@@ -280,7 +282,8 @@ header {
     color: #FFFFFF;
     background-color: #FF0000;
 }
-.frame__tab-button-li.is-active{
+.frame__tab-button-li.is-active,
+.extra__tab-button-li.is-active {
     transition: 0.2s;
     color: #ffffff;
     background-color: rgb(83, 83, 83);
@@ -292,7 +295,8 @@ header {
     background-color: #FF0000;
     opacity: 0.5;
 }
-.frame__tab-button-li:hover {
+.frame__tab-button-li:hover,
+.extra__tab-button-li:hover {
     transition: 0.2s;
     color: #333;
     background-color: #ffffff;
@@ -300,7 +304,8 @@ header {
 }
 
 .thread__tab-button-li:last-child,
-.frame__tab-button-li:last-child {
+.frame__tab-button-li:last-child,
+.extra__tab-button-li:last-child {
     border-right: 2px solid #DDD;
 }
 

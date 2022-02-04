@@ -119,19 +119,23 @@ function InsertFrameTab(frame, threadID) {
     $(`li.threadID${markThreadTab}`).show();
 
 }
-function InsertExtraTab(frame,threadID){
+function InsertExtraTab(){
 
-    let tab_Assembly = '<li>Assembly__tab-button-li'
-    let tab_Stack    = '<li>Stack__tab-button-li'
+    let tab_Assembly = $('<li>').attr({
+        class: 'extra__tab-button-li'
+    });
+    let tab_Stack    = $('<li>').attr({
+        class: 'extra__tab-button-li'
+    });
+    tab_Assembly.text('Assembly');
+    tab_Stack.text('Stack');
     tab_Assembly.on('click', tabExtraFunc);
     tab_Stack.on('click', tabExtraFunc);
 
     if (markExtraTab == 0)
         tab_Assembly.addClass("is-active");
     $(".extra__tab-button-ul").append(tab_Assembly);
-    $('li.frame__tab-button-li').hide();
-    $(`li.threadID${markThreadTab}`).show();
-
+    $(".extra__tab-button-ul").append(tab_Stack);
 }
 function toHex(v) {
     //console.log(typeof (v), v)
@@ -180,7 +184,7 @@ function tabExtraFunc(event){
     let other = $('ul.extra__tab-button-ul').children().not(tab);
     tab.addClass('is-active');
     other.removeClass('is-active');
-    
+
     $(`div#${tab.attr('id')}.table__wrapper.threadID${markThreadTab}`).show();
     markFrameTab = tab.attr('id');
 }
