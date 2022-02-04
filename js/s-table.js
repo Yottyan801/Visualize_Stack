@@ -23,8 +23,10 @@ function AnalyzeThreadInfo(thread, pthread) {
         return;
     for(let frame of thread.flist){
         InsertFrameTab(frame,threadID);
-        makeStable(frame);
+        makeStable(frame,threadID);
     }
+    $('div.table__wrapper').hide();
+    $(`div#${markFrameTab}.table__wrapper.threadID${markThreadTab}`).show();
 }
 
 function markAtCode(thread, t_idx) {
@@ -38,10 +40,9 @@ function markAtCode(thread, t_idx) {
     }else{
         $(`#${line}.mark`).css({ 'color': color_set[t_idx] });
     }
-
 }
 
-function makeStable(frame) {
+function makeStable(frame,threadID) {
     let stable = $('<table>').addClass('stable');
     let sthead =  $('<thead>').append('<tr>');
 
@@ -54,6 +55,7 @@ function makeStable(frame) {
 
     let wrap = $('<div>').attr({ id: frame.ID });
     wrap.addClass('table__wrapper');
+    wrap.addClass(`threadID${threadID}`);
     let CFA = $('<div>').text(`CFA:${frame.CFA}`);
     let PC = $('<div>').text(`PC:${frame.PC}`);
     let SP = $('<div>').text(`SP:${frame.SP}`);
@@ -112,7 +114,10 @@ function InsertFrameTab(frame, threadID) {
         tab_li.addClass("is-active");
     $(".frame__tab-button-ul").append(tab_li)
     $('li.frame__tab-button-li').hide();
-    $(`li.threadID${threadID}`).show();
+    $(`li.threadID${markThreadTab}`).show();
+
+}
+function InsertExtraTab(){
 
 }
 function toHex(v) {
@@ -143,7 +148,7 @@ function tabFrameFunc(event) {
     tab.addClass('is-active');
     other.removeClass('is-active');
     $('div.table__wrapper').hide();
-    $(`div#${tab.attr('id')}.table__wrapper`).show();
+    $(`div#${tab.attr('id')}.table__wrapper.threadID${markThreadTab}`).show();
     markFrameTab = tab.attr('id');
 }
 
@@ -154,8 +159,6 @@ function tabThreadFunc(event){
     other.removeClass('is-active');
     $('li.frame__tab-button-li').hide();
     $(`li.threadID${tab.attr('id')}`).show();
-    $('div.table__wrapper').hide();
-    $(`div#0.table__wrapper`).show();
     markThreadTab = tab.attr('id');
 }
 
