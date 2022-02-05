@@ -147,34 +147,56 @@ class lldbapi:
         if frame.GetLineEntry().IsValid():
             f_dict['line'] = frame.GetLineEntry().GetLine()
             # return f_dict
-
+        #print(f_dict['name'])
         f_dict['module'] = frame.GetModule().GetFileSpec().GetFilename()
-        error =lldb.SBError()
+        error = lldb.SBError()
         contents = self.process.ReadMemory(frame.GetFP()+8,8,error)
         if contents is None:
-            f_dict['retrun_ad'] = 'None'
+            f_dict['return_ad'] = 'None'
         else :
             f_dict['return_ad'] = hex(int.from_bytes(contents,'little'))
+        #print('FP=',hex(frame.GetFP()))
+        #print('CFA=',hex(frame.GetCFA()))
+        #print('retunr address = '+f_dict['return_ad'])
         f_dict['SP'] = hex(frame.GetSP())
+        
         f_dict['PC'] = hex(frame.GetPC())
         f_dict['FP'] = hex(frame.GetFP())
         f_dict['CFA'] = hex(frame.GetCFA())
 
-        f_dict['slist'] = []
+        f_dict['slist'] = self.StoreStackInfo(frame)
         
         symbol = frame.GetSymbol()
-
+        f_dict['alist'] = list()
         if symbol.GetType() == lldb.eSymbolTypeCode:
             instructions = symbol.GetInstructions(self.target)
             for inst in instructions:               
-                f_dict['slist'].append(self.StoreStackInfo(inst))
+                f_dict['alist'].append(self.StoreAssemblyInfo(inst))
         return f_dict
-                            
-    def StoreStackInfo(self,inst):
-        s_dict = dict()
 
+    def StoreStackInfo(self,frame):
+        error =lldb.SBError()
+        slist = list()
+        sp = frame.GetSP()
+        bp = frame.GetCFA()
+        while True:
+            stack = dict()
+            if sp == bp:
+                break
+            stack['address'] = hex(sp)
+            contents = self.process.ReadMemory(sp,8,error)
+            if contents is None:
+                stack['contents'] = 'null'
+            else :
+                stack['contents'] = hex(int.from_bytes(contents,'little'))
+            sp = sp +8
+            slist.append(stack)
+        return slist
+                            
+    def StoreAssemblyInfo(self,inst):
+        s_dict = dict()
         address = inst.GetAddress()
-        s_dict['address'] = hex(address.GetLoadAddress(self.target))
+        s_dict['addres'] = hex(address.GetLoadAddress(self.target))
         s_dict['mnemonic'] = inst.GetMnemonic(self.target)
         s_dict['operands'] = inst.GetOperands(self.target)
         return s_dict
