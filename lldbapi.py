@@ -4,20 +4,22 @@ import threading
 import subprocess
 import platform
 import Cparse
+import copy
 
 
 class lldbapi:
+    ValueType = ['invalid', 'global', 'static', 'arg', 'local', 0, 0, 0, 0]
     StopReason = ['invalid', 'None', 'Trace',
                   'BP', 'WP', 'Signal', 'Exception', 'Exec', 'PlanComplete', 'ThreadExiting']
 
     def __init__(self):
         self.procState = -1
-        self.stackinfo = []
+        self.stackinfo = dict()
         self.exit = True
-        self.thread = threading.Thread()
         lldb.SBDebugger.Initialize()
         self.arch = platform.machine()
         self.parser = Cparse.CParse()
+        self.thread = threading.Thread()
 
     def compile(self, fpath="sample/sample.c", lib="", bin_path="bin/target"):
 
@@ -87,12 +89,8 @@ class lldbapi:
         return out if out else ""
 
     def info_free(self):
-        for t_idx in range(len(self.stackinfo)):
-            try:
-                del self.stackinfo[t_idx]
-            except IndexError:
-                pass
-        self.stackinfo.__init__()
+        self.stackinfo = dict()
+        pass
 
     def CreateBPAtFunc(self):
         print(self.func)
@@ -100,6 +98,7 @@ class lldbapi:
             bp = self.target.BreakpointCreateByName(func)
             if not bp.IsValid():
                 print("Can not Create BP at main()")
+
     def CreateBPAtDesignatedLine(self,line):
         filepath = self.file.GetDirectory()+'/'+self.file.GetFilename()
         for l in line:
@@ -107,47 +106,55 @@ class lldbapi:
             bp = self.target.BreakpointCreateByLocation(filepath, l)
             if not bp.IsValid():
                 print("Can not Create BP(line:%s)" % str(l))
-                return False
-        return True
 
     def StoreProcessInfo(self):
         if not self.process.IsValid():
             print("Process Error")
             return
-        self.info_free()
         self.procState = self.process.GetState()
         self.thread_num = self.process.GetNumThreads()
         for idx in range(self.thread_num):
             thread = self.process.GetThreadAtIndex(idx)
-            self.stackinfo.append(self.StoreThreadInfo(thread))
+            if thread.GetIndexID() not in self.stackinfo:
+                self.stackinfo[thread.GetIndexID()] = dict()
+                self.stackinfo[thread.GetIndexID()]['flist'] = dict()
+            self.StoreThreadInfo(thread,self.stackinfo[thread.GetIndexID()])
 
-    def StoreThreadInfo(self, thread):
+    def StoreThreadInfo(self, thread,t_dict):
         if not thread.IsValid():
             print("Thread Error")
             return
-        t_dict = dict()
         t_dict["ID"] = thread.GetThreadID()
         t_dict["IndexID"] = thread.GetIndexID()
-        t_dict["flist"] = []
         t_dict["StopReason"] = self.StopReason[thread.GetStopReason()]
         for idx in range(thread.GetNumFrames()):
             frame = thread.GetFrameAtIndex(idx)
-            f_dict = self.StoreFrameInfo(frame)
-            if f_dict is not None:
-                t_dict['flist'].append(f_dict)
+            if frame.GetDisplayFunctionName() not in t_dict['flist']:
+                t_dict['flist'][frame.GetDisplayFunctionName()] = dict()
+                f_dict = t_dict['flist'][frame.GetDisplayFunctionName()]
+                f_dict['SP'] = hex(frame.GetSP())
+                f_dict['PC'] = hex(frame.GetPC())
+                f_dict['FP'] = hex(frame.GetFP())
+                f_dict['CFA'] = hex(frame.GetCFA())
+                f_dict['slist'] = dict()
+            self.StoreFrameInfo(frame,t_dict['flist'][frame.GetDisplayFunctionName()])
+        self.StoreStackInfo(t_dict)
+        for idx in range(thread.GetNumFrames()):
+            frame = thread.GetFrameAtIndex(idx)
+            v_list = frame.GetVariables(True, True, True, False)
+            for idx in range(v_list.GetSize()):
+                variable = v_list.GetValueAtIndex(idx)
+                self.StoreVariableInfo(variable,t_dict['flist'][frame.GetDisplayFunctionName()]['slist'],0)
         return t_dict
 
-    def StoreFrameInfo(self, frame):
+    def StoreFrameInfo(self, frame,f_dict):
         if not frame.IsValid():
             print("Frame Error")
             return
-        f_dict = dict()
         f_dict['ID'] = frame.GetFrameID()
         f_dict['name'] = frame.GetDisplayFunctionName()
         if frame.GetLineEntry().IsValid():
             f_dict['line'] = frame.GetLineEntry().GetLine()
-            # return f_dict
-        #print(f_dict['name'])
         f_dict['module'] = frame.GetModule().GetFileSpec().GetFilename()
         error = lldb.SBError()
         contents = self.process.ReadMemory(frame.GetFP()+8,8,error)
@@ -155,48 +162,57 @@ class lldbapi:
             f_dict['return_ad'] = 'None'
         else :
             f_dict['return_ad'] = hex(int.from_bytes(contents,'little'))
-        #print('FP=',hex(frame.GetFP()))
-        #print('CFA=',hex(frame.GetCFA()))
-        #print('retunr address = '+f_dict['return_ad'])
-        f_dict['SP'] = hex(frame.GetSP())
-        
-        f_dict['PC'] = hex(frame.GetPC())
-        f_dict['FP'] = hex(frame.GetFP())
-        f_dict['CFA'] = hex(frame.GetCFA())
-
-        f_dict['slist'] = self.StoreStackInfo(frame)
         
         symbol = frame.GetSymbol()
-        f_dict['alist'] = list()
+        f_dict['alist'] = dict()
         if symbol.GetType() == lldb.eSymbolTypeCode:
             instructions = symbol.GetInstructions(self.target)
-            for inst in instructions:               
-                f_dict['alist'].append(self.StoreAssemblyInfo(inst))
-        return f_dict
+            for inst in instructions:
+                address = hex(inst.GetAddress().GetLoadAddress(self.target))
+                if address not in  f_dict['alist']:
+                    f_dict['alist'][address] = dict()
+                self.StoreAssemblyInfo(inst,f_dict['alist'][address])
+        return 
 
-    def StoreStackInfo(self,frame):
+    def StoreVariableInfo(self, variable,s_dict,deep):
+        if(not variable.IsValid()):
+            print("variable is not valid")
+            return
+        s_dict[hex(variable.GetLoadAddress())] = dict()
+        v_dict = s_dict[hex(variable.GetLoadAddress())]
+        v_dict["type"] = variable.GetTypeName()
+        v_dict["name"] = variable.GetName()
+        v_dict["value"] = variable.GetValue()
+        v_dict["attr"] = self.ValueType[variable.GetValueType()]
+        if variable.MightHaveChildren():
+            for v_idx in range(variable.GetNumChildren()):
+                if deep > 10:
+                    return v_dict
+                child = variable.GetChildAtIndex(v_idx)
+                deep += 1
+                self.StoreVariableInfo(child, s_dict,deep)
+        
+        return 
+
+    def StoreStackInfo(self,t_dict):
         error =lldb.SBError()
-        slist = list()
-        sp = frame.GetSP()
-        bp = frame.GetCFA()
-        while True:
-            stack = dict()
-            if sp == bp:
-                break
-            stack['address'] = hex(sp)
-            contents = self.process.ReadMemory(sp,8,error)
-            if contents is None:
-                stack['contents'] = 'null'
-            else :
-                stack['contents'] = hex(int.from_bytes(contents,'little'))
-            sp = sp +8
-            slist.append(stack)
-        return slist
+        for key in t_dict['flist']:
+            f_dict = t_dict['flist'][key]
+            sp = int(f_dict['SP'],16)
+            bp = int(f_dict['CFA'],16)
+            while True:
+                if sp == bp:
+                    break
+                contents = self.process.ReadMemory(sp,8,error)
+                if contents is None:
+                    f_dict['slist'][hex(sp)]  = 'null'
+                    print('contents null')
+                else :
+                    f_dict['slist'][hex(sp)]  = hex(int.from_bytes(contents,'little'))
+                sp = sp +8
+        return
                             
-    def StoreAssemblyInfo(self,inst):
-        s_dict = dict()
-        address = inst.GetAddress()
-        s_dict['addres'] = hex(address.GetLoadAddress(self.target))
-        s_dict['mnemonic'] = inst.GetMnemonic(self.target)
-        s_dict['operands'] = inst.GetOperands(self.target)
-        return s_dict
+    def StoreAssemblyInfo(self,inst,a_dict):
+        a_dict['mnemonic'] = inst.GetMnemonic(self.target)
+        a_dict['operands'] = inst.GetOperands(self.target)
+        return 

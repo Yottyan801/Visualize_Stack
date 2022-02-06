@@ -43,7 +43,7 @@ $('#launch').click(function () {
     }).done(function (data) {
         line = Array();
         $(".mark").each(function(i, elem) {
-            if($(elem).text() != '　')
+            if($(elem).text() == '■')
                 line.push($(elem).attr('id'))
         });
         console.log(line);
@@ -60,8 +60,11 @@ $('#launch').click(function () {
             if (data.Output)
                 output(data.Output)
             Initialize();
-            for (let tidx in data.thread)
+            for (let tidx in data.thread){
+                if (data.thread == 'false')
+                    break;
                 AnalyzeThreadInfo(data.thread[tidx], data.pthread);
+            }
             InsertExtraTab();
             })
         }).fail(function(){
@@ -86,8 +89,11 @@ $('#continue,#skip').click(function () {
             $('textarea.output__text').text('');
             return;
         }
-        for (let tidx in data.thread)
-            AnalyzeThreadInfo(data.thread[tidx]);
+        for (let tidx in data.thread){
+            if (data.thread == 'false')
+                break;
+            AnalyzeThreadInfo(data.thread[tidx], data.pthread);
+        }
         InsertExtraTab();
         //initFunc();
     })

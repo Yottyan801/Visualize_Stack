@@ -1,12 +1,20 @@
-.stable,.str,.std{
+.stable,.str,.std,
+.atr,.atd{
     border-collapse: collapse;
     border:1px solid #333;
     font-size: 18px;
 }
-.std.addr{
+.atd.addr{
     width: 40%;
     text-align: right;
 }
-.std.mnemo,.std.ope{
+.atd.mnemo,.atd.ope{
     width: 30%;
+}
+p{
+    margin: 3px;
+}
+.return_ad{
+    background-color: lightskyblue;
+
 }

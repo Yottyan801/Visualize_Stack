@@ -46,6 +46,7 @@ class ServerHandler(SimpleHTTPRequestHandler):
         elif url.path[0] == "launch":
             self.debugger.CreateBPAtFunc()
             print("Launch:"+self.debugger.file.GetFilename())
+            self.debugger.info_free()
             self.debugger.Launch()
             stackdict = self.make_dict()
             self.send_data("text/json", data=json.dumps(stackdict))
