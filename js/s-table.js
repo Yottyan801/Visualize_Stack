@@ -137,7 +137,9 @@ function setAbody(frame, sbody) {
     }
 }
 function setSbody(frame, sbody) {
-    for(let stack in frame.slist){
+    keys = Object.keys(frame.slist)
+    keys.sort()
+    for(let stack of keys){
         let tr = $('<tr>').addClass('str');
         for(let key in shead_key){
             var td = $('<td>').addClass('std');
@@ -146,12 +148,8 @@ function setSbody(frame, sbody) {
                 td.text(toHex(stack));
             }else if(isObject(frame.slist[stack])){
                 vdict = frame.slist[stack]
-                for(key in vdict){
-                    if(key == 'attr')
-                        continue;
-                    ptag = $('<p>').text(`${key}:${vdict[key]}`)
-                    td.append(ptag);
-                }
+                contents = `${vdict.type} ${vdict.name} = ${vdict.value}`
+                td.text(contents)
             }else{
                 fp_ad = parseInt(Number(frame.FP),10)
                 if(fp_ad+8 == parseInt(Number(stack),10))
@@ -213,8 +211,10 @@ function InsertExtraTab(){
     tab_Stack.on('click', tabFunc);
 
     if (tab_state.extra == 0)
+        tab_Stack.addClass("is-active");
+    else
         tab_Assembly.addClass("is-active");
-        $(".extra__tab-button-ul").append(tab_Stack);
+    $(".extra__tab-button-ul").append(tab_Stack);
     $(".extra__tab-button-ul").append(tab_Assembly);
     
 }
