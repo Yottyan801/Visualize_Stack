@@ -26,7 +26,7 @@ function AnalyzeThreadInfo(thread, pthread) {
             return_ad_state[frame.name] = frame.return_ad
         }else{
             if(return_ad_state[frame.name] != frame.return_ad)
-                alert(`${frame.name} no retrun address ga kawarimasita`);
+                alert(`${frame.name}のリターンアドレスが変更されました！`);
         }
         InsertFrameTab(frame,threadID);
         makeStable(frame,threadID);
@@ -66,6 +66,7 @@ function makeStable(frame,threadID) {
     let wrap = $('<div>').addClass(`thread${threadID} frame${frame.ID} extra0`);
     wrap.addClass('table__wrapper');
     wrap.addClass(`threadID${threadID}`);
+    /*
     let CFA = $('<div>').text(`CFA:${frame.CFA}`);
     let PC = $('<div>').text(`PC:${frame.PC}`);
     let SP = $('<div>').text(`SP:${frame.SP}`);
@@ -76,7 +77,7 @@ function makeStable(frame,threadID) {
     wrap.append(SP);
     wrap.append(FP);
     wrap.append(return_ad);
-    
+    */
     if (tab_state.frame!= frame.ID)
         wrap.hide();
     $('div.thread__table-area').append(wrap.append(stable));
@@ -96,6 +97,7 @@ function makeAtable(frame,threadID) {
     let wrap = $('<div>').addClass(`thread${threadID} frame${frame.ID} extra1`);
     wrap.addClass('table__wrapper');
     wrap.addClass(`threadID${threadID}`);
+    /*
     let CFA = $('<div>').text(`CFA:${frame.CFA}`);
     let PC = $('<div>').text(`PC:${frame.PC}`);
     let SP = $('<div>').text(`SP:${frame.SP}`);
@@ -106,7 +108,7 @@ function makeAtable(frame,threadID) {
     wrap.append(SP);
     wrap.append(FP);
     wrap.append(return_ad);
-    
+    */
     if (tab_state.frame != frame.ID)
         wrap.hide();
     $('div.thread__table-area').append(wrap.append(stable));
