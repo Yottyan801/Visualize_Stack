@@ -25,8 +25,10 @@ function AnalyzeThreadInfo(thread, pthread) {
         if(!return_ad_state.hasOwnProperty(frame.name)){
             return_ad_state[frame.name] = frame.return_ad
         }else{
-            if(return_ad_state[frame.name] != frame.return_ad)
+            if(return_ad_state[frame.name] != frame.return_ad){
                 alert(`${frame.name}のリターンアドレスが変更されました！`);
+                return_ad_state[frame.name] = frame.return_ad;
+            }  
         }
         InsertFrameTab(frame,threadID);
         makeStable(frame,threadID);

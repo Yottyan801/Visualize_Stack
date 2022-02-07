@@ -106,6 +106,8 @@ class lldbapi:
             bp = self.target.BreakpointCreateByLocation(filepath, l)
             if not bp.IsValid():
                 print("Can not Create BP(line:%s)" % str(l))
+                return False
+        return True
 
     def StoreProcessInfo(self):
         if not self.process.IsValid():
@@ -186,7 +188,7 @@ class lldbapi:
         v_dict["attr"] = self.ValueType[variable.GetValueType()]
         if variable.MightHaveChildren():
             for v_idx in range(variable.GetNumChildren()):
-                if deep > 10:
+                if deep > 20:
                     return v_dict
                 child = variable.GetChildAtIndex(v_idx)
                 deep += 1
