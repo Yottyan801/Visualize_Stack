@@ -4,10 +4,13 @@ const color_set = ['#ff7f7f', '#ff7fbf', '#ff7fff', '#bf7fff', '#7f7fff', '#7fbf
 CodeActionListner();
 
 $('#codeEditor').on('input', CodeActionListner);
+$('.mark').click(markListner);
 
 function CodeActionListner() {
     let code = $('#codeEditor').val()
-    let lineNum = code.match(/\n/g).length;
+    let lineNum=0;
+    if (code.match(/\n/g) != null)
+        lineNum = code.match(/\n/g).length;
     let line_text = '', mark_text = '';
     for (let i = 0; i <= lineNum; i++) {
         line_text += `<div>${i + 1}</div>`;
@@ -15,6 +18,7 @@ function CodeActionListner() {
     }
     $('.line__number').html(line_text);
     $('.code__mark').html(mark_text);
+    $('.mark').click(markListner);
 }
 
 $('#codeEditor').on('scroll', function () {
@@ -22,13 +26,14 @@ $('#codeEditor').on('scroll', function () {
     $('.link').scrollTop(spos);
 });
 
-$('.mark').click(function(){
+
+function markListner(){
     $(this).css({ 'color': '#2f7dfa'});
     if($(this).text() == '　')
         $(this).text('■');
     else
         $(this).text('　');
-})
+}
 
 $('#launch').click(function () {
     source = $('#codeEditor').val()

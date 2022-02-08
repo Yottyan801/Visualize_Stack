@@ -123,7 +123,6 @@ function setAbody(frame, sbody) {
             var td = $('<td>').addClass('atd');
             td.addClass(ahead_key[key]);
             if (ahead_key[key] == 'address'){
-                console.log(return_ad_state)
                 for(fname in return_ad_state){
                     return_ad = parseInt(Number(return_ad_state[fname]),10)
                     if(return_ad == parseInt(Number(addr),10))

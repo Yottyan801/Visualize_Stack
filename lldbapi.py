@@ -129,6 +129,9 @@ class lldbapi:
         t_dict["ID"] = thread.GetThreadID()
         t_dict["IndexID"] = thread.GetIndexID()
         t_dict["StopReason"] = self.StopReason[thread.GetStopReason()]
+        for frame in t_dict['flist']:
+            if 'line' in t_dict['flist'][frame]:
+                del t_dict['flist'][frame]['line']
         for idx in range(thread.GetNumFrames()):
             frame = thread.GetFrameAtIndex(idx)
             if frame.GetDisplayFunctionName() not in t_dict['flist']:
@@ -208,7 +211,7 @@ class lldbapi:
                 contents = self.process.ReadMemory(sp,8,error)
                 if contents is None:
                     f_dict['slist'][hex(sp)]  = 'null'
-                    print('contents null')
+                    #print('contents null')
                 else :
                     f_dict['slist'][hex(sp)]  = hex(int.from_bytes(contents,'little'))
                 sp = sp +8
