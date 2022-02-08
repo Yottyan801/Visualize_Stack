@@ -3,8 +3,9 @@ const color_set = ['#ff7f7f', '#ff7fbf', '#ff7fff', '#bf7fff', '#7f7fff', '#7fbf
 
 CodeActionListner();
 
+
 $('#codeEditor').on('input', CodeActionListner);
-$('.mark').click(markListner);
+$('.mark').on('click',markListner);
 
 function CodeActionListner() {
     let code = $('#codeEditor').val()
@@ -18,7 +19,6 @@ function CodeActionListner() {
     }
     $('.line__number').html(line_text);
     $('.code__mark').html(mark_text);
-    $('.mark').click(markListner);
 }
 
 $('#codeEditor').on('scroll', function () {
