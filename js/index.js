@@ -5,7 +5,7 @@ CodeActionListner();
 
 
 $('#codeEditor').on('input', CodeActionListner);
-$('.mark').on('click',markListner);
+$(document).on('click','.mark',markListner);
 
 function CodeActionListner() {
     let code = $('#codeEditor').val()
